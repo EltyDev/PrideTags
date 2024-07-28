@@ -11,8 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.io.*;
 import java.net.*;
-import java.util.Arrays;
-import java.util.Queue;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -34,7 +34,15 @@ public class PronounsAPI {
                 consumer.accept(null);
             }
             if (lastTime + 600000 > System.currentTimeMillis()) continue;
-            refreshFlags();
+            Set<Profile> newProfiles = new HashSet<>(Pridetags.profiles);
+            Pridetags.profiles.clear();
+            for (Profile profile : newProfiles) {
+                try {
+                    getAsyncProfile(profile.getUsername());
+                } catch (URISyntaxException | IOException error) {
+                    error.printStackTrace();
+                }
+            }
             lastTime = System.currentTimeMillis();
         }
     }
@@ -54,7 +62,7 @@ public class PronounsAPI {
     }
 
     public static ResourceLocation getFlagTexture(String flag) throws IOException {
-        File file = Pridetags.ConfigPath.resolve("flags/" + flag + ".png").toFile();
+        File file = Pridetags.ConfigPath.resolve(flag + ".png").toFile();
         NativeImage image;
         boolean toRegister = true;
         if (!file.exists()) {
@@ -69,8 +77,8 @@ public class PronounsAPI {
             image = NativeImage.read(new FileInputStream(file));
         }
         String lowerCaseFlag = flag.toLowerCase().replaceAll(" ", "_");
-        for (ResourceLocation[] flags : Pridetags.flagsDatabase.values()) {
-            if (Arrays.stream(flags).anyMatch(flagRes -> flagRes.getPath().equals(lowerCaseFlag + "_1"))) {
+        for (Profile profile : Pridetags.profiles) {
+            if (Arrays.stream(profile.getFlags()).anyMatch(flagRes -> flagRes.getPath().equals(lowerCaseFlag + "_1"))) {
                 toRegister = false;
                 break;
             }
@@ -82,38 +90,47 @@ public class PronounsAPI {
         return ResourceLocation.withDefaultNamespace("dynamic/" + lowerCaseFlag + "_1");
     }
 
-    private static void asyncGetFlagsOf(String name) throws URISyntaxException, IOException {
+    public static String getPronoun(JsonObject profile) {
+        JsonArray pronounsArray = profile.getAsJsonObject("profiles").getAsJsonObject("en").getAsJsonArray("pronouns");
+        if (pronounsArray == null || pronounsArray.isEmpty()) return null;
+        return pronounsArray.get(0).getAsJsonObject().get("value").getAsString();
+    }
+
+    private static void getAsyncProfile(String name) throws URISyntaxException, IOException {
         URL url = new URI(API_URL + "profile/get/" + name + "?version=2").toURL();
-        JsonObject json = null;
+        JsonObject profile = null;
         try (InputStream stream = url.openStream()) {
             JsonElement element = JsonParser.parseReader(new InputStreamReader(stream));
-            json = element.getAsJsonObject();
+            profile = element.getAsJsonObject();
         }
-        JsonArray flagsArray = json.getAsJsonObject("profiles").getAsJsonObject("en").getAsJsonArray("flags");
+        String pronoun = getPronoun(profile);
+        ResourceLocation[] flags = getFlags(profile);
+        Pridetags.profiles.add(new Profile(name, pronoun, flags));
+    }
+
+
+    public static ResourceLocation[] getFlags(JsonObject profile) throws IOException {
+        JsonArray flagsArray = profile.getAsJsonObject("profiles").getAsJsonObject("en").getAsJsonArray("flags");
         ResourceLocation[] flags = new ResourceLocation[flagsArray.size()];
         for (int i = 0; i < flagsArray.size(); i++) {
             JsonElement flag = flagsArray.get(i);
             flags[i] = getFlagTexture(flag.getAsString());
         }
-        Pridetags.flagsDatabase.put(name, flags);
+        return flags;
     }
 
-    public static ResourceLocation[] getFlagsOf(String name) {
-        if (Pridetags.flagsDatabase.containsKey(name))
-            return Pridetags.flagsDatabase.get(name);
+    public static Profile getProfile(String name) {
+        Optional<Profile> maybeProfile = Pridetags.profiles.stream().filter(profile -> profile.getUsername().equals(name)).findFirst();
+        if (maybeProfile.isPresent()) return maybeProfile.get();
         queues.add(v -> {
             try {
-                if (!Pridetags.flagsDatabase.containsKey(name))
-                    asyncGetFlagsOf(name);
+                if (Pridetags.profiles.stream().noneMatch(profile -> profile.getUsername().equals(name)))
+                    getAsyncProfile(name);
             } catch (URISyntaxException | IOException error) {
                 error.printStackTrace();
             }
         });
         return null;
-    }
-
-    public static void refreshFlags() {
-        Pridetags.flagsDatabase.clear();
     }
 
 }
