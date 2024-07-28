@@ -11,11 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.io.*;
 import java.net.*;
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Queue;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -58,7 +55,7 @@ public class PronounsAPI {
 
     public static ResourceLocation getFlagTexture(String flag) throws IOException {
         File file = Pridetags.ConfigPath.resolve("flags/" + flag + ".png").toFile();
-        NativeImage image = null;
+        NativeImage image;
         boolean toRegister = true;
         if (!file.exists()) {
             try {
@@ -80,8 +77,7 @@ public class PronounsAPI {
         }
         if (toRegister) {
             DynamicTexture dynamicTexture = new DynamicTexture(image);
-            ResourceLocation resourceLocation = Minecraft.getInstance().getTextureManager().register(lowerCaseFlag, dynamicTexture);
-            return resourceLocation;
+            return Minecraft.getInstance().getTextureManager().register(lowerCaseFlag, dynamicTexture);
         }
         return ResourceLocation.withDefaultNamespace("dynamic/" + lowerCaseFlag + "_1");
     }
@@ -102,7 +98,7 @@ public class PronounsAPI {
         Pridetags.flagsDatabase.put(name, flags);
     }
 
-    public static ResourceLocation[] getFlagsOf(String name) throws URISyntaxException, IOException {
+    public static ResourceLocation[] getFlagsOf(String name) {
         if (Pridetags.flagsDatabase.containsKey(name))
             return Pridetags.flagsDatabase.get(name);
         queues.add(v -> {
