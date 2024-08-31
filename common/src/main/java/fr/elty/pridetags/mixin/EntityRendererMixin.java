@@ -68,7 +68,7 @@ public abstract class EntityRendererMixin<T extends Entity> {
             if (!bl) break;
             if (flag == null) continue;
             RenderSystem.bindTexture(Minecraft.getInstance().getTextureManager().getTexture(flag).getId());
-            VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.textSeeThrough(flag));
+            VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.text(flag));
             vertexConsumer.addVertex(matrix4f, padding - totalWidth/2 , -height - j, 0).setColor(255, 255, 255, 255).setUv(0, 1).setLight(i);
             vertexConsumer.addVertex(matrix4f, padding - totalWidth/2, offsetY - height - j, 0).setColor(255, 255, 255, 255).setUv(0, 0).setLight(i);
             vertexConsumer.addVertex(matrix4f,offsetX + padding - totalWidth/2, offsetY - height - j, 0).setColor(255, 255, 255, 255).setUv(1, 0).setLight(i);
