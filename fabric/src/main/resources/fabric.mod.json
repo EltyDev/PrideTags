@@ -3,9 +3,9 @@
   "id": "pridetags",
   "version": "${version}",
   "name": "PrideTags",
-  "description": "",
+  "description": "Display flags and pronouns from pronouns.page",
   "authors": [
-    ""
+    "Elty"
   ],
   "contact": {
     "homepage": ""
