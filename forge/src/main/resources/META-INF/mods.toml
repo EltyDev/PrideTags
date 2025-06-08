@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[43,)"
+#issueTrackerURL = ""
+license = "GNU GPL 3.0"
+
+[[mods]]
+modId = "pridetags"
+version = "${version}"
+displayName = "PrideTags"
+authors = ""
+description = '''
+
+'''
+#logoFile = ""
+
+[[dependencies.pridetags]]
+modId = "forge"
+mandatory = true
+versionRange = "[43,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.pridetags]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.pridetags]]
+modId = "architectury"
+mandatory = true
+versionRange = "[6.6.92,)"
+ordering = "AFTER"
+side = "BOTH"
