@@ -17,6 +17,6 @@ public class Profile {
 
     public String getUsername() { return username; }
     public String getPronoun() { return pronoun; }
-    public ResourceLocation[] getFlags() { return flags; }
+    public ResourceLocation[] getFlags() { return flags == null ? new ResourceLocation[0] : flags; }
 
 }
