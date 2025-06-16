@@ -1,5 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow'
+    id "com.hypherionmc.modutils.modpublisher" version "2.1.7"
 }
 
 architectury {
@@ -51,3 +52,31 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
 }
+
+publisher {
+
+    modrinthDepends {
+        required "fabric-api", "architectury-api"
+    }
+    curseDepends {
+        required "fabric-api", "architectury-api"
+    }
+    apiKeys {
+        modrinth env.MODRINTH_TOKEN.value
+        curseforge env.CURSE_TOKEN.value
+    }
+    setCurseID("1094179")
+    setModrinthID("Ld2hGGKt")
+    setVersionType("release")
+    setChangelog("")
+    setProjectVersion("${minecraft_version}-fabric-${project.version}")
+    setDisplayName("${minecraft_version} PrideTags - ${project.version} - Fabric")
+    setGameVersions("1.21")
+    setLoaders("fabric")
+    setCurseEnvironment("client")
+    setIsManualRelease(true)
+    setArtifact(jar)
+    setJavaVersions(21, 21);
+    setDisableEmptyJarCheck(true)
+}
+
