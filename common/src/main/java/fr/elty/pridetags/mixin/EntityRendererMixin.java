@@ -35,6 +35,9 @@ public abstract class EntityRendererMixin<T extends Entity> {
     @Unique
     private static final int Y_GAP = 3;
 
+    @Shadow
+    public abstract Font getFont();
+
     @Unique
     public boolean isRenderingScore(Player player, Component component) {
         Scoreboard scoreboard = player.getScoreboard();
@@ -47,7 +50,12 @@ public abstract class EntityRendererMixin<T extends Entity> {
     }
 
     @Inject(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V", shift = At.Shift.BEFORE))
-    private void renderNameTag(T entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, float f, CallbackInfo ci, @Local Matrix4f matrix4f, @Local Font font, @Local boolean bl, @Local(ordinal = 1) int j, @Local(ordinal = 2) int k) {
+    private void renderNameTag(T entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, float f, CallbackInfo ci) {
+        Matrix4f matrix4f = poseStack.last().pose();
+        Font font = this.getFont();
+        int k = (int) (Minecraft.getInstance().options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
+        int j = "deadmau5".equals(component.getString()) ? -10 : 0;
+        boolean bl = !entity.isDiscrete();
         if (!(entity instanceof Player player)) return;
         if (isRenderingScore(player, component)) return;
         String username = player.getName().getString();
