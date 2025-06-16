@@ -74,9 +74,8 @@ public class PronounsAPI {
                 System.err.println("Failed to load flag texture: " + error);
                 return null;
             }
-        } else {
+        } else
             image = NativeImage.read(new FileInputStream(file));
-        }
         String lowerCaseFlag = flag.toLowerCase().replaceAll(" ", "_");
         for (Profile profile : Pridetags.profiles) {
             if (Arrays.stream(profile.getFlags()).anyMatch(flagRes -> flagRes.getPath().equals(lowerCaseFlag + "_1"))) {
@@ -84,11 +83,12 @@ public class PronounsAPI {
                 break;
             }
         }
+        ResourceLocation location = new ResourceLocation(Pridetags.MOD_ID, "flag_" + lowerCaseFlag);
         if (toRegister) {
             DynamicTexture dynamicTexture = new DynamicTexture(image);
-            return Minecraft.getInstance().getTextureManager().register(lowerCaseFlag, dynamicTexture);
+            Minecraft.getInstance().getTextureManager().register(location, dynamicTexture);
         }
-        return ResourceLocation.tryBuild( "minecraft", "dynamic/" + lowerCaseFlag + "_1");
+        return location;
     }
 
     public static String getPronoun(JsonObject profile) {

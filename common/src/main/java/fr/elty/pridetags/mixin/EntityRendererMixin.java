@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(EntityRenderer.class)
 public abstract class EntityRendererMixin<T extends Entity> {
@@ -31,6 +32,9 @@ public abstract class EntityRendererMixin<T extends Entity> {
     private static final int X_GAP = 1;
     @Unique
     private static final int Y_GAP = 3;
+
+    @Shadow
+    public abstract Font getFont();
 
     @Unique
     public boolean isRenderingScore(Player player, Component component) {
@@ -44,7 +48,12 @@ public abstract class EntityRendererMixin<T extends Entity> {
     }
 
     @Inject(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V", shift = At.Shift.BEFORE))
-    private void renderNameTag(T entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, CallbackInfo ci, @Local Matrix4f matrix4f, @Local Font font, @Local boolean bl, @Local(ordinal = 1) int j, @Local(ordinal = 2) int k) {
+    private void renderNameTag(T entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, CallbackInfo ci) {
+        Matrix4f matrix4f = poseStack.last().pose();
+        Font font = this.getFont();
+        boolean isNotSneaking = !entity.isDiscrete();
+        int j = "deadmau5".equals(component.getString()) ? -10 : 0;
+        int k = (int) (Minecraft.getInstance().options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
         if (!(entity instanceof Player player)) return;
         if (isRenderingScore(player, component)) return;
         String username = player.getName().getString();
@@ -62,9 +71,9 @@ public abstract class EntityRendererMixin<T extends Entity> {
         float totalWidth = (flags.length) * offsetX + X_GAP * (flags.length - 1);
         float padding = 0;
         for (ResourceLocation flag : flags) {
-            if (!bl) break;
+            if (!isNotSneaking) break;
             if (flag == null) continue;
-            RenderSystem.bindTexture(Minecraft.getInstance().getTextureManager().getTexture(flag).getId());
+            RenderSystem.setShaderTexture(0, flag);
             VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.text(flag));
             vertexConsumer.vertex(matrix4f, padding - totalWidth/2 , -height - j, 0).color(255, 255, 255, 255).uv(0, 1).uv2(i & '\uffff', i >> 16 & '\uffff').endVertex();
             vertexConsumer.vertex(matrix4f, padding - totalWidth/2, offsetY - height - j, 0).color(255, 255, 255, 255).uv(0, 0).uv2(i & '\uffff', i >> 16 & '\uffff').endVertex();
@@ -76,7 +85,7 @@ public abstract class EntityRendererMixin<T extends Entity> {
         MutableComponent pronoun = Component.empty().append(profile.getPronoun());
         float halfWidth = (float)(-font.width(pronoun) / 2);
         poseStack.scale(0.5F, 0.5F, 1);
-        if (!bl) return;
+        if (!isNotSneaking) return;
         font.drawInBatch(pronoun, halfWidth, -height * 3 - j, 553648127, false, matrix4f, multiBufferSource, true, k, i);
         font.drawInBatch(pronoun, halfWidth, -height * 3 - j, -1, false, matrix4f, multiBufferSource, false, 0, i);
     }

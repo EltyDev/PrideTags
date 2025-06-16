@@ -17,12 +17,6 @@ public final class Pridetags {
     public static Set<Profile> profiles = ConcurrentHashMap.newKeySet();
 
     public static void init() {
-        if (Platform.isFabric())
-            ConfigPath = FabricLoader.getInstance().getGameDir().resolve("resources/pridetags_flags/");
-        else {
-            //TODO To change later
-            ConfigPath = FabricLoader.getInstance().getGameDir().resolve("resources/pridetags_flags/");
-        }
         PronounsAPI.THREAD.start();
     }
 }
