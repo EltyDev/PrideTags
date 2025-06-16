@@ -3,8 +3,8 @@ package fr.elty.pridetags.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import fr.elty.pridetags.Pridetags;
 import fr.elty.pridetags.Profile;
-import fr.elty.pridetags.PronounsAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -53,7 +53,7 @@ public abstract class EntityRendererMixin<T extends Entity> {
         String username = player.getName().getString();
         Profile profile = null;
         try {
-            profile = PronounsAPI.getProfile(username);
+            profile = Pridetags.getProfile(username);
         } catch (Exception error) {
             error.printStackTrace();
         }
@@ -63,25 +63,26 @@ public abstract class EntityRendererMixin<T extends Entity> {
         float offsetX = 21.3f / 1.75f;
         float offsetY = 12.8f / 1.75f;
         float totalWidth = (flags.length) * offsetX + X_GAP * (flags.length - 1);
-        float padding = 0;
+        float paddingX = 0;
+        float paddingY = flags.length > 0 ? 3 : 1;
         for (ResourceLocation flag : flags) {
             if (!bl) break;
             if (flag == null) continue;
             RenderSystem.setShaderTexture(0, flag);
             RenderSystem.bindTexture(Minecraft.getInstance().getTextureManager().getTexture(flag).getId());
             VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.text(flag));
-            vertexConsumer.addVertex(matrix4f, padding - totalWidth/2 , -height - j, 0).setColor(255, 255, 255, 255).setUv(0, 1).setLight(i);
-            vertexConsumer.addVertex(matrix4f, padding - totalWidth/2, offsetY - height - j, 0).setColor(255, 255, 255, 255).setUv(0, 0).setLight(i);
-            vertexConsumer.addVertex(matrix4f,offsetX + padding - totalWidth/2, offsetY - height - j, 0).setColor(255, 255, 255, 255).setUv(1, 0).setLight(i);
-            vertexConsumer.addVertex(matrix4f, offsetX + padding- totalWidth/2, -height - j, 0).setColor(255, 255, 255, 255).setUv(1, 1).setLight(i);
-            padding += offsetX + X_GAP;
+            vertexConsumer.addVertex(matrix4f, paddingX - totalWidth/2 , -height - j, 0).setColor(255, 255, 255, 255).setUv(0, 1).setLight(i);
+            vertexConsumer.addVertex(matrix4f, paddingX - totalWidth/2, offsetY - height - j, 0).setColor(255, 255, 255, 255).setUv(0, 0).setLight(i);
+            vertexConsumer.addVertex(matrix4f,offsetX + paddingX - totalWidth/2, offsetY - height - j, 0).setColor(255, 255, 255, 255).setUv(1, 0).setLight(i);
+            vertexConsumer.addVertex(matrix4f, offsetX + paddingX- totalWidth/2, -height - j, 0).setColor(255, 255, 255, 255).setUv(1, 1).setLight(i);
+            paddingX += offsetX + X_GAP;
         }
         if (profile.getPronoun() == null) return;
         MutableComponent pronoun = Component.empty().append(profile.getPronoun());
         float halfWidth = (float)(-font.width(pronoun) / 2);
         poseStack.scale(0.5F, 0.5F, 1);
         if (!bl) return;
-        font.drawInBatch(pronoun, halfWidth, -height * 3 - j, 553648127, false, matrix4f, multiBufferSource, Font.DisplayMode.SEE_THROUGH, k, i);
-        font.drawInBatch(pronoun, halfWidth, -height * 3 - j, -1, false, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, i);
+        font.drawInBatch(pronoun, halfWidth, -height * paddingY - j, 553648127, false, matrix4f, multiBufferSource, Font.DisplayMode.SEE_THROUGH, k, i);
+        font.drawInBatch(pronoun, halfWidth, -height * paddingY - j, -1, false, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, i);
     }
 }
