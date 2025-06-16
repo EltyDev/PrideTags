@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -83,11 +82,12 @@ public class PronounsAPI {
                 break;
             }
         }
+        ResourceLocation location =  ResourceLocation.fromNamespaceAndPath(Pridetags.MOD_ID, "flag_" + lowerCaseFlag);
         if (toRegister) {
             DynamicTexture dynamicTexture = new DynamicTexture(image);
-            return Minecraft.getInstance().getTextureManager().register(lowerCaseFlag, dynamicTexture);
+            Minecraft.getInstance().getTextureManager().register(location, dynamicTexture);
         }
-        return ResourceLocation.withDefaultNamespace("dynamic/" + lowerCaseFlag + "_1");
+        return location;
     }
 
     public static String getPronoun(JsonObject profile) {

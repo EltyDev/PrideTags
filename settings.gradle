@@ -11,3 +11,4 @@ rootProject.name = 'pridetags'
 
 include 'common'
 include 'fabric'
+include 'neoforge'
