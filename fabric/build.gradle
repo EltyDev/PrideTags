@@ -68,7 +68,7 @@ publisher {
     setCurseID("1094179")
     setModrinthID("Ld2hGGKt")
     setVersionType("release")
-    setChangelog("https://raw.githubusercontent.com/EltyDev/PrideTags/refs/heads/version/${minecraft_version}/changelog.md")
+    setChangelog("https://raw.githubusercontent.com/EltyDev/PrideTags/refs/heads/version/" + minecraft_version + "/changelog.md")
     setProjectVersion("${minecraft_version}-fabric-${project.version}")
     setDisplayName("${minecraft_version} PrideTags - ${project.version} - Fabric")
     setGameVersions("1.21")
