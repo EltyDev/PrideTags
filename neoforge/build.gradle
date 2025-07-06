@@ -74,14 +74,14 @@ publisher {
     setCurseID("1094179")
     setModrinthID("Ld2hGGKt")
     setVersionType("release")
-    setChangelog("")
+    setChangelog("https://raw.githubusercontent.com/EltyDev/PrideTags/refs/heads/main/changelog.md")
     setProjectVersion("${minecraft_version}-forge-${project.version}")
     setDisplayName("${minecraft_version} PrideTags - ${project.version} - Forge")
     setGameVersions("1.21")
     setLoaders("forge")
     setCurseEnvironment("client")
     setIsManualRelease(true)
-    setArtifact(jar)
+    setArtifact(remapJar)
     setJavaVersions(21, 21);
     setDisableEmptyJarCheck(true)
 }

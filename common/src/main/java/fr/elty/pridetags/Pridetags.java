@@ -4,8 +4,6 @@ import fr.elty.pridetags.api.BaseAPI;
 import fr.elty.pridetags.api.PronounsCC;
 import fr.elty.pridetags.api.PronounsPage;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

@@ -8,8 +8,12 @@ import fr.elty.pridetags.Pridetags;
 import fr.elty.pridetags.Profile;
 import net.minecraft.resources.ResourceLocation;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public class PronounsPage extends BaseAPI {
 

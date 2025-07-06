@@ -2,7 +2,6 @@ package fr.elty.pridetags.neoforge;
 
 import fr.elty.pridetags.Pridetags;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
