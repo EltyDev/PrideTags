@@ -14,8 +14,6 @@ allprojects {
     version = rootProject.mod_version
 }
 
-project.logger.debug(env.MODRINTH_TOKEN.value)
-
 subprojects {
     apply plugin: 'dev.architectury.loom'
     apply plugin: 'architectury-plugin'

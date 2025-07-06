@@ -71,12 +71,12 @@ publisher {
     setChangelog("https://raw.githubusercontent.com/EltyDev/PrideTags/refs/heads/version/" + minecraft_version + "/changelog.md")
     setProjectVersion("${minecraft_version}-fabric-${project.version}")
     setDisplayName("${minecraft_version} PrideTags - ${project.version} - Fabric")
-    setGameVersions("1.21")
+    setGameVersions(minecraft_version)
     setLoaders("fabric")
     setCurseEnvironment("client")
     setIsManualRelease(true)
     setArtifact(remapJar)
-    setJavaVersions(21, 21);
+    setJavaVersions(JavaVersion.current(), JavaVersion.current());
     setDisableEmptyJarCheck(true)
 }
 
