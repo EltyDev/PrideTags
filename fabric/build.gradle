@@ -75,7 +75,7 @@ publisher {
     setLoaders("fabric")
     setCurseEnvironment("client")
     setIsManualRelease(true)
-    setArtifact(build)
+    setArtifact(remapJar)
     setJavaVersions(21, 21);
     setDisableEmptyJarCheck(true)
 }
