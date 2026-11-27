@@ -44,7 +44,7 @@ public class PronounsCC extends BaseAPI {
             ResourceLocation[] flags = getFlags(profile);
             Pridetags.profiles.add(new Profile(name, pronoun, flags));
             return true;
-        } catch (URISyntaxException | IOException error) {
+        } catch (URISyntaxException | IOException | RuntimeException error) {
             return false;
         }
     }

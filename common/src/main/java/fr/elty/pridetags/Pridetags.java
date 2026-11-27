@@ -51,7 +51,15 @@ public final class Pridetags {
                 Consumer<Void> consumer = queues.poll();
                 consumer.accept(null);
             }
-            if (lastTime + 600000 > System.currentTimeMillis()) continue;
+            if (lastTime + 600000 > System.currentTimeMillis()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException error) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+                continue;
+            }
             Set<Profile> newProfiles = new HashSet<>(Pridetags.profiles);
             Pridetags.profiles.clear();
             for (Profile profile : newProfiles) {
